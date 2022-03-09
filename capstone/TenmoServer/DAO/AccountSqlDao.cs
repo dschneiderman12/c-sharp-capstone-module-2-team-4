@@ -18,8 +18,7 @@ namespace TenmoServer.DAO
 
         public decimal GetBalance(int accountId)
         {
-
-            decimal returnAccount = 423;
+            decimal returnBalance = 423;
 
             try
             {
@@ -35,7 +34,7 @@ namespace TenmoServer.DAO
 
                     if (reader.Read())
                     {
-                        returnAccount = Convert.ToDecimal(reader["balance"]);
+                        returnBalance = Convert.ToDecimal(reader["balance"]);
                     }
                 }
             }
@@ -43,12 +42,7 @@ namespace TenmoServer.DAO
             {
                 throw;
             }
-
-
-            return returnAccount;
-
-
+            return returnBalance;
         }
-
     }
 }

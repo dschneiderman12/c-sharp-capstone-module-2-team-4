@@ -21,14 +21,12 @@ namespace TenmoServer.Controllers
             accountDao = _accountDao;
         }
 
-        [HttpGet("balance")]
+        [HttpGet("balance/{accountId}")]
 
         public decimal GetBalance(int accountId)
         {
-
             decimal Balance = accountDao.GetBalance(accountId);
             return Balance;
-
         }
 
         [HttpPost("balance")]
