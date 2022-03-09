@@ -28,8 +28,8 @@ namespace TenmoServer.DAO
                     conn.Open();
 
                     SqlCommand cmd = new SqlCommand(@"SELECT balance FROM account
-JOIN tenmo_user ON tenmo_user.user_id = account.user_id
-WHERE account_id = @account_id;", conn);
+                                                JOIN tenmo_user ON tenmo_user.user_id = account.user_id
+                                                WHERE account_id = @account_id;", conn);
                     cmd.Parameters.AddWithValue("@account_id", accountId);
                     SqlDataReader reader = cmd.ExecuteReader();
 

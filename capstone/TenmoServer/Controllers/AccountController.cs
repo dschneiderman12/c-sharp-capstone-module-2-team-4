@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TenmoServer.DAO;
 
 namespace TenmoServer.Controllers
 {
@@ -11,9 +12,41 @@ namespace TenmoServer.Controllers
     [ApiController]
     [Authorize]
 
-    public class BalanceController : ControllerBase
+    public class AccountController : ControllerBase
     {
-     
+        private readonly IAccountDao accountDao;
+
+        public AccountController(IAccountDao _accountDao)
+        {
+            accountDao = _accountDao;
+        }
+
+        [HttpGet("balance")]
+
+        public decimal GetBalance(int accountId)
+        {
+
+            decimal Balance = accountDao.GetBalance(accountId);
+            return Balance;
+
+        }
+
+        [HttpPost("balance")]
+
+        public void SendTransfer()
+        {
+
+        }
+
+        public void ViewTransfers()
+        {
+
+        }
+
+        public void GetTransferById(int id)
+        {
+
+        }
 
 
 
