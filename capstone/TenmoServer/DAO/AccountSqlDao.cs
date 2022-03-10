@@ -21,7 +21,7 @@ namespace TenmoServer.DAO
         public Tuple<decimal,string> GetBalance(int accountId, string username)
         {
             decimal returnBalance = 0;
-            string coloumnLength = string.Empty;
+            string columnLength = string.Empty;
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
@@ -37,11 +37,11 @@ namespace TenmoServer.DAO
                     if (reader.Read())
                     {
                     returnBalance = Convert.ToDecimal(reader["balance"]);
-                    coloumnLength = Convert.ToString(reader["Result"]);
+                    columnLength = Convert.ToString(reader["Result"]);
                     }
                 }
          
-            return Tuple.Create(returnBalance, coloumnLength);
+            return Tuple.Create(returnBalance, columnLength);
         }
     }
 }
