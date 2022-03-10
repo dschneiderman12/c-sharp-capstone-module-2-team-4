@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using TenmoServer.Models;
 
 namespace TenmoServer.DAO
 {
@@ -16,36 +18,30 @@ namespace TenmoServer.DAO
         }
 
 
-        public decimal GetBalance(int accountId)
+        public Tuple<decimal,string> GetBalance(int accountId, string username)
         {
-            decimal returnBalance = 423;
+            decimal returnBalance = 0;
+            string columnLength = string.Empty;
 
-            try
-            {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand(@"SELECT balance FROM account
+                    SqlCommand cmd = new SqlCommand(@"SELECT balance, COL_LENGTH('account','balance') AS Result FROM account
                                                 JOIN tenmo_user ON tenmo_user.user_id = account.user_id
-                                                WHERE account_id = @account_id", conn);
+                                                WHERE account_id = @account_id AND username=@username", conn);
                     cmd.Parameters.AddWithValue("@account_id", accountId);
-                    //cmd.Parameters.AddWithValue("@user_id", userId);
+                    cmd.Parameters.AddWithValue("@username", username);
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     if (reader.Read())
                     {
-                        returnBalance = Convert.ToDecimal(reader["balance"]);
+                    returnBalance = Convert.ToDecimal(reader["balance"]);
+                    columnLength = Convert.ToString(reader["Result"]);
                     }
                 }
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            return returnBalance;
+         
+            return Tuple.Create(returnBalance, columnLength);
         }
-
-
     }
 }

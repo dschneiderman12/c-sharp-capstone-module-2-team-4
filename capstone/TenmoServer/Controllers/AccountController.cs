@@ -16,21 +16,28 @@ namespace TenmoServer.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountDao accountDao;
-
+ 
         public AccountController(IAccountDao _accountDao)
         {
             accountDao = _accountDao;
         }
 
         [HttpGet("balance/{accountId}")]
-        
-        public decimal GetBalance(int accountId)
-        {
-            User testUser = new User();
-            testUser.Username = User.Identity.Name;
 
-            decimal Balance = accountDao.GetBalance(accountId);
-            return Balance;
+        public ActionResult GetBalance(int accountId)
+        {
+            string username = User.FindFirst("name")?.Value;
+            decimal Balance = accountDao.GetBalance(accountId, username).Item1;
+            string ColumnLength = accountDao.GetBalance(accountId, username).Item2;
+            if (ColumnLength != "")
+            {
+                return Ok(Balance);
+            }
+            else
+            {
+                return BadRequest();
+            }
+         
 
         }
 
