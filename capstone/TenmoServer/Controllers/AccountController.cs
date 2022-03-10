@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TenmoServer.DAO;
+using TenmoServer.Models;
 
 namespace TenmoServer.Controllers
 {
@@ -39,24 +40,6 @@ namespace TenmoServer.Controllers
          
 
         }
-
-        [HttpPost("balance")]
-
-        public void SendTransfer()
-        {
-
-        }
-
-        public void ViewTransfers()
-        {
-
-        }
-
-        public void GetTransferById(int id)
-        {
-
-        }
-
 
 
     }

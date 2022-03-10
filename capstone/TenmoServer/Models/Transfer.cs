@@ -10,13 +10,9 @@ namespace TenmoServer.Models
 
         public int TransferId { get; set; }
         public int TransferStatusId { get; set; }
-
         public int TransferTypeId { get; set; }
-
         public int AccountFromId { get; set; }
-
         public int AccountToId { get; set; }
-
         public decimal TransferAmount { get; set; }
 
         public Transfer()
