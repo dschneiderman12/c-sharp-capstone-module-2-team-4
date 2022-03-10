@@ -69,20 +69,20 @@ namespace TenmoServer.Controllers
         //    return transferDao.ListCompletedTransfers();
         //}
 
-        //[HttpGet("{transferId}")]
-        //public ActionResult<Transfer> GetTransferById(int transferId)
-        //{
-        //    Transfer transfer = transferDao.GetTransfer(transferId);
-
-        //    if (transfer != null)
-        //    {
-        //        return transfer;
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
+        [HttpGet("{transferId}")]
+        public ActionResult<Transfer> GetTransferById(int transferId)
+        {
+            Transfer transfer = transferDao.GetTransfer(transferId);
+            
+            if (transfer != null)
+            {
+                return transfer;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
 
         //[HttpPut]
