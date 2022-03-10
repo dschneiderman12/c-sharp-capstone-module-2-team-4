@@ -22,12 +22,41 @@ namespace TenmoServer.Controllers
         }
 
         [HttpGet("users")]
-        public List<User> ListUsers()
+        public List<User> ListUsersForTransfers()
         {
-            return transferDao.ListUsers();
+            string username = User.FindFirst("name")?.Value;
+            return transferDao.ListUsers(username);
         }
 
-    
+        [HttpPost]
+        public ActionResult<Transfer> NewTransfer(Transfer transfer)
+        {
+            Transfer added = transferDao.Create(transfer);
+            return Created($"/transfer/{added.TransferId}", added);
+        }
+
+        //[HttpGet("{username}")]
+        //public List<Transfer> ViewTransfers()
+        //{
+        //    return transferDao.ListCompletedTransfers();
+        //}
+
+        //[HttpGet("{transferId}")]
+        //public ActionResult<Transfer> GetTransferById(int transferId)
+        //{
+        //    Transfer transfer = transferDao.GetTransfer(transferId);
+
+        //    if (transfer != null)
+        //    {
+        //        return transfer;
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+        //}
+
+
         //[HttpPut]
         //public ActionResult SendTransfer(decimal moneyToTransfer, int accountTo, int accountFrom)
         //{
@@ -38,26 +67,5 @@ namespace TenmoServer.Controllers
         //    }
         //    return StatusCode(202);
         //}
-
-        [HttpGet("{userId}/transfers}")]
-        public List<Transfer> ViewTransfers(int userId)
-        {
-            return transferDao.ListCompletedTransfers();
-        }
-
-        [HttpGet("{transferId}")]
-        public ActionResult<Transfer> GetTransferById(int transferId)
-        {
-            Transfer transfer = transferDao.GetTransfer(transferId);
-
-            if (transfer != null)
-            {
-                return transfer;
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
     }
 }

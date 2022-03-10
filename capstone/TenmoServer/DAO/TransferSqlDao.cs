@@ -99,15 +99,16 @@ namespace TenmoServer.DAO
             }
         }
 
-        public List<User> ListUsers()
+        public List<User> ListUsers(string username)
         {
             List<User> users = new List<User>();
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
-                SqlCommand cmd = new SqlCommand(@"SELECT user_id, username FROM tenmo_user;", conn);
-
+                SqlCommand cmd = new SqlCommand(@"SELECT user_id, username FROM tenmo_user
+                                                WHERE username != @username;", conn);
+                cmd.Parameters.AddWithValue("@username", username);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -120,7 +121,7 @@ namespace TenmoServer.DAO
             return users;
         }
 
-        public List<Transfer> ListCompletedTransfers(int userId)
+        public List<Transfer> ListCompletedTransfers()
         {
             List<Transfer> completedTransfers = new List<Transfer>();
             using (SqlConnection conn = new SqlConnection(connectionString))

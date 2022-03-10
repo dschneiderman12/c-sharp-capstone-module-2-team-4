@@ -13,7 +13,7 @@ namespace TenmoServer.DAO
         public Transfer Create(Transfer newTransfer);
         public void ExecuteTransfer(Transfer transfer);
         public void DenyTransfer(Transfer transfer);
-        public List<User> ListUsers();
+        public List<User> ListUsers(string username);
         public List<Transfer> ListCompletedTransfers();
     }
 }
