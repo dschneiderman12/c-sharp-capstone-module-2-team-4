@@ -20,26 +20,44 @@ namespace TenmoServer.Controllers
         {
             transferDao = _transferDao;
         }
+
+        [HttpGet("users")]
+        public List<User> ListUsers()
+        {
+            return transferDao.ListUsers();
+        }
+
     
-        [HttpPut]
-        public ActionResult SendTransfer(decimal moneyToTransfer, int accountTo, int accountFrom)
+        //[HttpPut]
+        //public ActionResult SendTransfer(decimal moneyToTransfer, int accountTo, int accountFrom)
+        //{
+        //    bool transfer = transferDao.SendTransfer(moneyToTransfer, accountTo, accountFrom);
+        //    if(!transfer)
+        //    {
+        //        return StatusCode(400);
+        //    }
+        //    return StatusCode(202);
+        //}
+
+        [HttpGet("{userId}/transfers}")]
+        public List<Transfer> ViewTransfers()
         {
-            bool transfer = transferDao.SendTransfer(moneyToTransfer, accountTo, accountFrom);
-            if(!transfer)
+            return transferDao.ListCompletedTransfers();
+        }
+
+        [HttpGet("{transferId}")]
+        public ActionResult<Transfer> GetTransferById(int transferId)
+        {
+            Transfer transfer = transferDao.GetTransfer(transferId);
+
+            if (transfer != null)
             {
-                return StatusCode(400);
+                return transfer;
             }
-            return StatusCode(202);
-        }
-
-        public void ViewTransfers()
-        {
-
-        }
-
-        public void GetTransferById(int id)
-        {
-
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }
