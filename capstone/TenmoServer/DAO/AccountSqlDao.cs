@@ -17,7 +17,7 @@ namespace TenmoServer.DAO
             connectionString = dbConnectionString;
         }
 
-
+        
         public Tuple<decimal,string> GetBalance(int accountId, string username)
         {
             decimal returnBalance = 0;
