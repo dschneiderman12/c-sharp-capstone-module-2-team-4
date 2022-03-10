@@ -120,7 +120,7 @@ namespace TenmoServer.DAO
             return users;
         }
 
-        public List<Transfer> ListCompletedTransfers()
+        public List<Transfer> ListCompletedTransfers(int userId)
         {
             List<Transfer> completedTransfers = new List<Transfer>();
             using (SqlConnection conn = new SqlConnection(connectionString))

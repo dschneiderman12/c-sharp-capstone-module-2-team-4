@@ -40,7 +40,7 @@ namespace TenmoServer.Controllers
         //}
 
         [HttpGet("{userId}/transfers}")]
-        public List<Transfer> ViewTransfers()
+        public List<Transfer> ViewTransfers(int userId)
         {
             return transferDao.ListCompletedTransfers();
         }
