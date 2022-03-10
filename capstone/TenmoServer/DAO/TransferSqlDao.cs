@@ -37,7 +37,7 @@ namespace TenmoServer.DAO
             return transfer;
         }
 
-        public Transfer Create(Transfer newTransfer)
+        public Transfer CreateRequest(Transfer newTransfer)
         {
             int newTransferId;
 
@@ -46,7 +46,28 @@ namespace TenmoServer.DAO
                 conn.Open();
 
                 SqlCommand cmd = new SqlCommand(@"INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)
+                                                OUTPUT INSERTED.transfer_id
                                                 VALUES (1, 1, @account_from, @account_to, @amount);", conn);
+                cmd.Parameters.AddWithValue("@account_from", newTransfer.AccountFromId);
+                cmd.Parameters.AddWithValue("@account_to", newTransfer.AccountToId);
+                cmd.Parameters.AddWithValue("@amount", newTransfer.TransferAmount);
+
+                newTransferId = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+            return GetTransfer(newTransferId);
+        }
+
+        public Transfer CreateSend(Transfer newTransfer)
+        {
+            int newTransferId;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                SqlCommand cmd = new SqlCommand(@"INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)
+                                                OUTPUT INSERTED.transfer_id
+                                                VALUES (2, 2, @account_from, @account_to, @amount);", conn);
                 cmd.Parameters.AddWithValue("@account_from", newTransfer.AccountFromId);
                 cmd.Parameters.AddWithValue("@account_to", newTransfer.AccountToId);
                 cmd.Parameters.AddWithValue("@amount", newTransfer.TransferAmount);
@@ -71,7 +92,7 @@ namespace TenmoServer.DAO
                                                 WHERE account_id = @account_to;
 
                                                 UPDATE transfer
-                                                SET transfer_type_id = 2, transfer_status_id = 2
+                                                SET transfer_status_id = 2
                                                 WHERE transfer_id = @transfer_id", conn);
 
                 cmd.Parameters.AddWithValue("@account_from", transfer.AccountFromId);

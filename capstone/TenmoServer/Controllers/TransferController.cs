@@ -15,10 +15,12 @@ namespace TenmoServer.Controllers
     public class TransferController : ControllerBase
     {
         private readonly ITransferDao transferDao;
+        private readonly IAccountDao accountDao;
 
-        public TransferController(ITransferDao _transferDao)
+        public TransferController(ITransferDao _transferDao, IAccountDao _accountDao)
         {
             transferDao = _transferDao;
+            accountDao = _accountDao;
         }
 
         [HttpGet("users")]
@@ -29,10 +31,36 @@ namespace TenmoServer.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Transfer> NewTransfer(Transfer transfer)
+        public ActionResult<Transfer> NewTransferRequest(Transfer transfer)
         {
-            Transfer added = transferDao.Create(transfer);
+            Transfer added = transferDao.CreateRequest(transfer);
             return Created($"/transfer/{added.TransferId}", added);
+        }
+
+        [HttpPost]
+        public ActionResult<Transfer> NewTransferSend(Transfer transfer)
+        {
+            Transfer added = transferDao.CreateSend(transfer);
+            return Created($"/transfer/{added.TransferId}", added);
+        }
+
+        [HttpPut("{transferId}")]
+        public ActionResult<Transfer> UpdateTransfer(int transferId)
+        {
+            string username = User.FindFirst("name")?.Value;
+            Transfer transferToUpdate = transferDao.GetTransfer(transferId);
+            decimal balanceFromAccount = accountDao.GetBalance(transferToUpdate.AccountFromId, username).Item1;
+
+            if ((balanceFromAccount >= transferToUpdate.TransferAmount) && (transferToUpdate.TransferAmount > 0))
+            {
+                transferDao.ExecuteTransfer(transferToUpdate);
+                return Ok();
+            }
+            else
+            {
+                transferDao.DenyTransfer(transferToUpdate);
+                return StatusCode(400);
+            }
         }
 
         //[HttpGet("{username}")]
