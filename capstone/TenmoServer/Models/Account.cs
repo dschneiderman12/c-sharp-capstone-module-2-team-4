@@ -17,7 +17,6 @@ namespace TenmoServer.Models
             AccountId = accountId;
             Balance = balance;
             UserId = userId;
-
         }
 
     }
