@@ -2,6 +2,8 @@
 {
     public class User
     {
+        internal static object Identity;
+
         public int UserId { get; set; }
         public string Username { get; set; }
         public string PasswordHash { get; set; }
