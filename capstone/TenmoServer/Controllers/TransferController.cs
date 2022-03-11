@@ -101,6 +101,19 @@ namespace TenmoServer.Controllers
             string username = User.FindFirst("name")?.Value;
             int accountId = accountDao.GetAccountNumber(username);
             return transferDao.ListCompletedTransfers(accountId);
+            //Dictionary<string, Transfer> transferList = transferDao.ListCompletedTransfers(accountId);
+            //foreach(KeyValuePair<string, Transfer> transfer in transferList)
+            //{
+            //    if (transfer.Value.UserFrom == null)
+            //    {
+            //        transfer.Value.UserFrom = User.Identity.Name;
+            //    }
+            //    else if (transfer.Value.UserTo == null)
+            //    {
+            //        transfer.Value.UserTo = User.Identity.Name;
+            //    }
+            //}
+            //return transferList;
         }
 
         [HttpGet("{transferId}")]
