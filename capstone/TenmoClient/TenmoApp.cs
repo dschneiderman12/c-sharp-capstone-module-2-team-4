@@ -73,26 +73,32 @@ namespace TenmoClient
 
             if (menuSelection == 1)
             {
+                ShowBalance();
+                //return true;
                 // View your current balance
             }
 
             if (menuSelection == 2)
             {
+               // ShowPastTransfers();
                 // View your past transfers
             }
 
             if (menuSelection == 3)
             {
+                //ShowPendingRequests();
                 // View your pending requests
             }
 
             if (menuSelection == 4)
             {
+                //SendTeBucks();
                 // Send TE bucks
             }
 
             if (menuSelection == 5)
             {
+                //RequestTeBucks();
                 // Request TE bucks
             }
 
@@ -155,6 +161,22 @@ namespace TenmoClient
             catch (Exception)
             {
                 console.PrintError("Registration was unsuccessful.");
+            }
+            console.Pause();
+        }
+
+        private void ShowBalance()
+        {
+
+            try
+            {
+                string accountName = tenmoApiService.Username;
+                decimal balance = tenmoApiService.GetBalance(accountName);
+                console.PrintBalance(tenmoApiService.Username, balance);
+            }
+            catch (Exception ex)
+            {
+                console.PrintError(ex.Message);
             }
             console.Pause();
         }
