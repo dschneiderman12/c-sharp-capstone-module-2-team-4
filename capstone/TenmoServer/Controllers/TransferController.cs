@@ -30,14 +30,14 @@ namespace TenmoServer.Controllers
             return transferDao.ListUsers(username);
         }
 
-        [HttpPost]
+        [HttpPost("request")]
         public ActionResult<Transfer> NewTransferRequest(Transfer transfer)
         {
             Transfer added = transferDao.CreateRequest(transfer);
             return Created($"/transfer/{added.TransferId}", added);
         }
 
-        [HttpPost]
+        [HttpPost("send")]
         public ActionResult<Transfer> NewTransferSend(Transfer transfer)
         {
             Transfer added = transferDao.CreateSend(transfer);
@@ -65,10 +65,13 @@ namespace TenmoServer.Controllers
             }
         }
 
-        [HttpGet("{username}")]
-        public List<Transfer> ViewTransfers()
+        [HttpGet("completed")]
+        public Dictionary<Transfer, string> ViewTransfers()
         {
-            return transferDao.ListCompletedTransfers();
+            string username = User.FindFirst("name")?.Value;
+            int accountId = accountDao.GetAccountNumber(username);
+            
+            return transferDao.ListCompletedTransfers(accountId);
         }
 
         [HttpGet("{transferId}")]
@@ -84,18 +87,6 @@ namespace TenmoServer.Controllers
             {
                 return NotFound();
             }
-        }
-
-
-        [HttpPut]
-        public ActionResult SendTransfer(decimal moneyToTransfer, int accountTo, int accountFrom)
-        {
-            bool transfer = transferDao.SendTransfer(moneyToTransfer, accountTo, accountFrom);
-            if (!transfer)
-            {
-                return StatusCode(400);
-            }
-            return StatusCode(202);
         }
     }
 }

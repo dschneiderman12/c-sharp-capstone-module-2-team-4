@@ -7,6 +7,7 @@ namespace TenmoServer.Models
 {
     public class Account
     {
+        internal static object Identity;
         public int AccountId { get; set; }
         public decimal Balance { get; set; }
         public int UserId { get; set; }
