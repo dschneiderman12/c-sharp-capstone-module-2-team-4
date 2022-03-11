@@ -142,17 +142,26 @@ namespace TenmoServer.DAO
             return users;
         }
 
-        public List<Transfer> ListCompletedTransfers()
+        public List<Transfer> ListCompletedTransfers(string username)
         {
             List<Transfer> completedTransfers = new List<Transfer>();
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 //fix
-                SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount
+                SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, account_from, account_to, amount
                                                 FROM transfer
-                                                WHERE transfer_status_id = 2", conn);
-
+                                                JOIN account ON account.account_id = transfer.account_from
+                                                JOIN tenmo_user ON tenmo_user.user_id = account.user_id
+                                                WHERE transfer_status_id = 2 AND username = @username
+                                                UNION
+                                                SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount
+                                                FROM transfer
+                                                JOIN account ON account.account_id = transfer.account_to
+                                                JOIN tenmo_user ON tenmo_user.user_id = account.user_id
+                                                WHERE transfer_status_id = 2 AND username = @username
+                                                ", conn);
+                cmd.Parameters.AddWithValue("@username", username);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
