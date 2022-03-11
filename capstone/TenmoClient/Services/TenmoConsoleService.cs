@@ -58,7 +58,7 @@ namespace TenmoClient.Services
             Console.Clear();
             Console.WriteLine("");
             Console.WriteLine($"Hello, {username}!");
-            Console.WriteLine($"Your current account balance is: {balance}");
+            Console.WriteLine($"Your current account balance is: {balance.ToString("C")}");
     
             Console.WriteLine("---------");
         }

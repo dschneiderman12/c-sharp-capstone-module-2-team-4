@@ -17,10 +17,11 @@ namespace TenmoClient.Services
         {
 
             RestRequest request = new RestRequest($"account/balance/{accountName}");
-            IRestResponse <Account> response = client.Get<Account>(request);
+            IRestResponse<decimal> response = client.Get<decimal>(request);
 
             CheckForError(response);
-            return response.Data.Balance;
+
+            return response.Data;
         }
     }
 }
