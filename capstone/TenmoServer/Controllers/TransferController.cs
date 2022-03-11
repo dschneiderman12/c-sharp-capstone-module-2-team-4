@@ -44,56 +44,58 @@ namespace TenmoServer.Controllers
             return Created($"/transfer/{added.TransferId}", added);
         }
 
-        //[HttpPut("{transferId}")]
-        //public ActionResult<Transfer> UpdateTransfer(int transferId)
-        //{
-        //    string username = User.FindFirst("name")?.Value;
-        //    Transfer transferToUpdate = transferDao.GetTransfer(transferId);
-        //    decimal balanceFromAccount = accountDao.GetBalance(transferToUpdate.AccountFromId, username).Item1;
+        [HttpPut("{transferId}")]
+        public ActionResult<Transfer> UpdateTransfer(int transferId)
+        {
+            string username = User.FindFirst("name")?.Value;
+            string userIdString = User.FindFirst("sub")?.Value;
+            int userId = int.Parse(userIdString);
+            Transfer transferToUpdate = transferDao.GetTransfer(transferId);
+            decimal balanceFromAccount = accountDao.GetBalance(username,userId).Item1;
 
-        //    if ((balanceFromAccount >= transferToUpdate.TransferAmount) && (transferToUpdate.TransferAmount > 0))
-        //    {
-        //        transferDao.ExecuteTransfer(transferToUpdate);
-        //        return Ok();
-        //    }
-        //    else
-        //    {
-        //        transferDao.DenyTransfer(transferToUpdate);
-        //        return StatusCode(400);
-        //    }
-        //}
+            if ((balanceFromAccount >= transferToUpdate.TransferAmount) && (transferToUpdate.TransferAmount > 0))
+            {
+                transferDao.ExecuteTransfer(transferToUpdate);
+                return Ok();
+            }
+            else
+            {
+                transferDao.DenyTransfer(transferToUpdate);
+                return StatusCode(400);
+            }
+        }
 
-        //[HttpGet("{username}")]
-        //public List<Transfer> ViewTransfers()
-        //{
-        //    return transferDao.ListCompletedTransfers();
-        //}
+        [HttpGet("{username}")]
+        public List<Transfer> ViewTransfers()
+        {
+            return transferDao.ListCompletedTransfers();
+        }
 
-        //[HttpGet("{transferId}")]
-        //public ActionResult<Transfer> GetTransferById(int transferId)
-        //{
-        //    Transfer transfer = transferDao.GetTransfer(transferId);
+        [HttpGet("{transferId}")]
+        public ActionResult<Transfer> GetTransferById(int transferId)
+        {
+            Transfer transfer = transferDao.GetTransfer(transferId);
 
-        //    if (transfer != null)
-        //    {
-        //        return transfer;
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
+            if (transfer != null)
+            {
+                return transfer;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
 
-        //[HttpPut]
-        //public ActionResult SendTransfer(decimal moneyToTransfer, int accountTo, int accountFrom)
-        //{
-        //    bool transfer = transferDao.SendTransfer(moneyToTransfer, accountTo, accountFrom);
-        //    if(!transfer)
-        //    {
-        //        return StatusCode(400);
-        //    }
-        //    return StatusCode(202);
-        //}
+        [HttpPut]
+        public ActionResult SendTransfer(decimal moneyToTransfer, int accountTo, int accountFrom)
+        {
+            bool transfer = transferDao.SendTransfer(moneyToTransfer, accountTo, accountFrom);
+            if (!transfer)
+            {
+                return StatusCode(400);
+            }
+            return StatusCode(202);
+        }
     }
 }
