@@ -8,7 +8,7 @@ namespace TenmoServer.DAO
 {
     public interface IAccountDao
     {
-      Tuple<decimal,string> GetBalance(int accountId, string username);
+      Tuple<decimal,string> GetBalance(string username,int userId);
 
     }
 }
