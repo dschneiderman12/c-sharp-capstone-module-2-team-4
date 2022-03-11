@@ -76,11 +76,12 @@ namespace TenmoClient
                 ShowBalance();
                 //return true;
                 // View your current balance
+
             }
 
             if (menuSelection == 2)
             {
-               // ShowPastTransfers();
+               ShowPastTransfers();
                 // View your past transfers
             }
 
@@ -173,11 +174,31 @@ namespace TenmoClient
                 string accountName = tenmoApiService.Username;
                 decimal balance = tenmoApiService.GetBalance(accountName);
                 console.PrintBalance(tenmoApiService.Username, balance);
+
             }
             catch (Exception ex)
             {
                 console.PrintError(ex.Message);
             }
+
+            console.Pause();
+
+        }
+
+
+        private void ShowPastTransfers()
+        {
+            try
+            {
+                Dictionary<Transfer,string> transfers = tenmoApiService.ViewTransfers();
+                console.PrintTransfers(transfers);
+
+            }
+            catch (Exception ex)
+            {
+                console.PrintError(ex.Message);
+            }
+
             console.Pause();
         }
     }
