@@ -26,8 +26,8 @@ namespace TenmoServer.DAO
                 conn.Open();
 
                 SqlCommand cmd = new SqlCommand(@"SELECT account_id From account
-        JOIN tenmo_user ON account.user_id=tenmo_user.user_id
-        WHERE username = @username", conn);
+                                    JOIN tenmo_user ON account.user_id=tenmo_user.user_id
+                                    WHERE username = @username", conn);
                 cmd.Parameters.AddWithValue("@username", username);
                 SqlDataReader reader = cmd.ExecuteReader();
 
@@ -40,7 +40,7 @@ namespace TenmoServer.DAO
 
         }
 
-        public Tuple<decimal, string> GetBalance(string username,int userId)
+        public Tuple<decimal, string> GetBalance(string username, int userId)
         {
             decimal returnBalance = 0;
             string columnLength = string.Empty;

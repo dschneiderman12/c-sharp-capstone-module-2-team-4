@@ -81,7 +81,10 @@ namespace TenmoClient
 
             if (menuSelection == 2)
             {
-               ShowPastTransfers();
+                ShowPastTransfers();
+
+                Console.WriteLine("Please enter transfer ID to view details (0 to cancel): ");
+                ShowTransferById();
                 // View your past transfers
             }
 
@@ -190,9 +193,24 @@ namespace TenmoClient
         {
             try
             {
-                Dictionary<Transfer,string> transfers = tenmoApiService.ViewTransfers();
+                Dictionary<string, Transfer> transfers = tenmoApiService.ViewTransfers();
                 console.PrintTransfers(transfers);
 
+            }
+            catch (Exception ex)
+            {
+                console.PrintError(ex.Message);
+            }
+
+            console.Pause();
+        }
+
+        private void ShowTransferById()
+        {
+            try
+            {
+                Dictionary<string, Transfer> transfers = tenmoApiService.ViewTransfers();
+                console.PrintTransfer(transfers);
             }
             catch (Exception ex)
             {

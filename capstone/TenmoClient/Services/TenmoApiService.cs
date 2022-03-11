@@ -19,19 +19,25 @@ namespace TenmoClient.Services
             IRestResponse<decimal> response = client.Get<decimal>(request);
 
             CheckForError(response);
-
             return response.Data;
         }
 
-        public Dictionary<Transfer, string> ViewTransfers()
+        public Dictionary<string, Transfer> ViewTransfers()
         {
             RestRequest request = new RestRequest($"transfer/completed");
-            IRestResponse<Dictionary<Transfer, string>> response = client.Get<Dictionary<Transfer, string>>(request);
+            IRestResponse<Dictionary<string, Transfer>> response = client.Get<Dictionary<string, Transfer>>(request);
 
             CheckForError(response);
-
             return response.Data;
+        }
 
+        public Transfer GetTransferById(int transferId)
+        {
+            RestRequest request = new RestRequest($"transfer/{transferId}");
+            IRestResponse<Transfer> response = client.Get<Transfer>(request);
+
+            CheckForError(response);
+            return response.Data;
         }
     }
 }
