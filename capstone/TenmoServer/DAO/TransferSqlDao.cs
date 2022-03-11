@@ -142,137 +142,37 @@ namespace TenmoServer.DAO
             return users;
         }
 
-        public List<Transfer> ListCompletedTransfers(string username)
+        public Dictionary<Transfer, string> ListCompletedTransfers(int accountId)
         {
-            List<Transfer> completedTransfers = new List<Transfer>();
+            Dictionary<Transfer, string> userTransfers = new Dictionary<Transfer, string>();
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                //fix
-                SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, account_from, account_to, amount
+                
+                SqlCommand cmd = new SqlCommand(@"SELECT username, transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount
                                                 FROM transfer
                                                 JOIN account ON account.account_id = transfer.account_from
                                                 JOIN tenmo_user ON tenmo_user.user_id = account.user_id
-                                                WHERE transfer_status_id = 2 AND username = @username
+                                                WHERE transfer_status_id = 2 AND account_to = @account_id
                                                 UNION
-                                                SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount
+                                                SELECT username, transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount
                                                 FROM transfer
                                                 JOIN account ON account.account_id = transfer.account_to
                                                 JOIN tenmo_user ON tenmo_user.user_id = account.user_id
-                                                WHERE transfer_status_id = 2 AND username = @username
+                                                WHERE transfer_status_id = 2 AND account_from = @account_id
                                                 ", conn);
-                cmd.Parameters.AddWithValue("@username", username);
+                cmd.Parameters.AddWithValue("@account_id", accountId);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Transfer transfer = createTransferFromReader(reader);
-                    completedTransfers.Add(transfer);
+                    Transfer transfer = createTransferFromReader(reader);                    
+                    string user = Convert.ToString(reader["username"]);
+                    userTransfers[transfer] = user;
                 }
             }
-            return completedTransfers;
-        }
-
-        
-        //public Transfer CreateTransfer(decimal moneyToTransfer, int accountFrom, int accountTo)
-        //{
-        //    Transfer transfer = new Transfer();
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-
-        //            SqlCommand cmd = new SqlCommand(@"INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)
-        //                                            VALUES (1, 1, @account_from, @account_to, @amount);", conn);
-        //            cmd.Parameters.AddWithValue("@account_from", accountFrom);
-        //            cmd.Parameters.AddWithValue("@account_to", accountTo);
-        //            cmd.Parameters.AddWithValue("@amount", moneyToTransfer);
-
-        //            cmd.ExecuteScalar();
-        //        }
-        //    }
-        //    catch (SqlException)
-        //    {
-        //        throw;
-        //    }
-        //}
-
-        //public bool CheckBalance(decimal moneyToTransfer, int accountFrom)
-        //public bool CheckBalance(Transfer transfer)
-        //{
-        //    decimal currentBalance = 0;
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-
-        //            SqlCommand cmd = new SqlCommand(@"SELECT balance FROM account
-        //                                            JOIN tenmo_user ON tenmo_user.user_id = account.user_id
-        //                                            WHERE account_id = @account_from;", conn);
-        //            cmd.Parameters.AddWithValue("@account_from", transfer.AccountFromId);
-        //            cmd.Parameters.AddWithValue("@amount", transfer.TransferAmount);
-
-        //            SqlDataReader reader = cmd.ExecuteReader();
-
-        //            if (reader.Read())
-        //            {
-        //                currentBalance = Convert.ToDecimal(reader["balance"]);
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException)
-        //    {
-        //        throw;
-        //    }
-
-        //    if (currentBalance >= transfer.TransferAmount)
-        //    {
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
-        //public bool SendTransfer(decimal moneyToTransfer, int accountFrom, int accountTo, int transferId)
-        //{
-        //    if (CheckBalance(transfer))
-        //    {
-        //        try
-        //        {
-        //            using (SqlConnection conn = new SqlConnection(connectionString))
-        //            {
-        //                conn.Open();
-
-        //                SqlCommand cmd = new SqlCommand(@"UPDATE account
-        //                                                SET balance = balance - @amount
-        //                                                WHERE account_id = @accountFrom;
-
-        //                                                UPDATE account
-        //                                                SET balance = balance + @amount
-        //                                                WHERE account_id = @accountTo;
-
-        //                                                UPDATE transfer", conn);
-        //                cmd.Parameters.AddWithValue("@accountFrom", accountFrom);
-        //                cmd.Parameters.AddWithValue("@accountTo", accountTo);
-        //                cmd.Parameters.AddWithValue("@amount", moneyToTransfer);
-
-        //                cmd.ExecuteNonQuery();
-        //            }
-        //        }
-        //        catch (SqlException)
-        //        {
-        //            throw;
-        //        }
-        //        return true;
-        //    }
-        //    else
-        //    {
-
-
-        //        return false;
-        //    }
-        //}
-
+            return userTransfers;
+        }          
+       
         private Transfer createTransferFromReader(SqlDataReader reader)
         {
             Transfer transfer = new Transfer();
