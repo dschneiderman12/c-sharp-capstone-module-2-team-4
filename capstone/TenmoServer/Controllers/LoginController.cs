@@ -9,6 +9,7 @@ namespace TenmoServer.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
+       
         private readonly ITokenGenerator tokenGenerator;
         private readonly IPasswordHasher passwordHasher;
         private readonly IUserDao userDao;
@@ -67,6 +68,12 @@ namespace TenmoServer.Controllers
             }
 
             return result;
+
+            //User testUser = new User();
+            //testUser.Username = User.Identity.Name;
+
+            //Viewbag.UserId
         }
+
     }
 }
