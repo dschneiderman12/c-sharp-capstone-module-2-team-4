@@ -62,5 +62,24 @@ namespace TenmoClient.Services
     
             Console.WriteLine("---------");
         }
+
+        public void PrintTransfers(Dictionary<Transfer, string> transfers)
+        {
+            Console.Clear();
+            Console.WriteLine("");
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine($"Transfer ID             From/to             Amount");
+
+            foreach(KeyValuePair<Transfer,string> transfer in transfers)
+            {
+                Console.WriteLine($"{transfer.Key.TransferId}           {transfer.Value}        {transfer.Key.TransferAmount}");
+            }
+        
+
+            Console.WriteLine("---------");
+        }
+
+
+
     }
 }

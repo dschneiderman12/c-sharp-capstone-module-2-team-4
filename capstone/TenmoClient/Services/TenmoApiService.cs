@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using TenmoClient.Models;
 
-
 namespace TenmoClient.Services
 {
     public class TenmoApiService : AuthenticatedApiService
@@ -22,6 +21,17 @@ namespace TenmoClient.Services
             CheckForError(response);
 
             return response.Data;
+        }
+
+        public Dictionary<Transfer, string> ViewTransfers()
+        {
+            RestRequest request = new RestRequest($"transfer/completed");
+            IRestResponse<Dictionary<Transfer, string>> response = client.Get<Dictionary<Transfer, string>>(request);
+
+            CheckForError(response);
+
+            return response.Data;
+
         }
     }
 }
