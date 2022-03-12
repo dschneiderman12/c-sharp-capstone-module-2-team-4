@@ -16,6 +16,7 @@ namespace TenmoServer.DAO
         public void DenyTransfer(Transfer transfer);
         public List<User> ListUsers(string username);
         public Dictionary<string, Transfer> ListCompletedTransfers(int accountId);
+        public Dictionary<string, Transfer> ListPendingTransfers(int accountId);
     }
 }
 

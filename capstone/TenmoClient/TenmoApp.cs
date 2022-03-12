@@ -76,7 +76,6 @@ namespace TenmoClient
                 ShowBalance();
                 //return true;
                 // View your current balance
-
             }
 
             if (menuSelection == 2)
@@ -92,21 +91,22 @@ namespace TenmoClient
 
             if (menuSelection == 3)
             {
-                //ShowPendingRequests();
+                ShowPendingRequests();
                 // View your pending requests
+                RespondToRequest();
             }
 
             if (menuSelection == 4)
             {
                 ShowUsersToSendBucks();
-
                 SendTEBucks();
                 // Send TE bucks
             }
 
             if (menuSelection == 5)
             {
-                //RequestTeBucks();
+                ShowUsersToSendBucks();
+                RequestTeBucks();
                 // Request TE bucks
             }
 
@@ -116,7 +116,6 @@ namespace TenmoClient
                 tenmoApiService.Logout();
                 console.PrintSuccess("You are now logged out");
             }
-
             return true;    // Keep the main menu loop going
         }
 
@@ -146,7 +145,6 @@ namespace TenmoClient
             }
             console.Pause();
         }
-
         private void Register()
         {
             LoginUser registerUser = console.PromptForLogin();
@@ -172,45 +170,39 @@ namespace TenmoClient
             }
             console.Pause();
         }
-
         private void ShowBalance()
         {
-
             try
             {
                 string accountName = tenmoApiService.Username;
                 decimal balance = tenmoApiService.GetBalance(accountName);
                 console.PrintBalance(tenmoApiService.Username, balance);
-
             }
             catch (Exception ex)
             {
                 console.PrintError(ex.Message);
             }
-
             console.Pause();
-
         }
-
-
         private void ShowPastTransfers()
         {
             try
             {
                 Dictionary<string, Transfer> transfers = tenmoApiService.ViewTransfers();
                 console.PrintTransfers(transfers);
-
             }
             catch (Exception ex)
             {
                 console.PrintError(ex.Message);
             }
-
             console.Pause();
         }
-
         private void ShowTransferById(string id)
-        {
+        {            
+            if (id == "0")
+            {
+                return;
+            }
             try
             {
                 Dictionary<string, Transfer> transfers = tenmoApiService.GetTransferById(id);
@@ -220,10 +212,8 @@ namespace TenmoClient
             {
                 console.PrintError(ex.Message);
             }
-
             console.Pause();
         }
-
         private void ShowUsersToSendBucks()
         {
             try
@@ -235,29 +225,107 @@ namespace TenmoClient
             {
                 console.PrintError(ex.Message);
             }
-
             console.Pause();
-
         }
-
         private void SendTEBucks()
         {
             Transfer transfer = new Transfer();
 
-            transfer.AccountToId = console.PromptForInteger("Id of the user you are requesting from[0]");
-            transfer.TransferAmount = console.PromptForInteger("Enter amount to request");
+            transfer.AccountToId = console.PromptForInteger("Id of the user you are sending to: ");
+            transfer.TransferAmount = console.PromptForInteger("Enter amount to send: ");
 
             try
             {
-
                 Transfer newtransfer = tenmoApiService.SendTeBucks(transfer);
             }
             catch (Exception ex)
             {
                 console.PrintError(ex.Message);
             }
-
             console.Pause();
         }
+        private void RequestTeBucks()
+        {
+            Transfer transfer = new Transfer();
+
+            transfer.AccountFromId = console.PromptForInteger("Id of the user you are requesting from: ");
+            transfer.TransferAmount = console.PromptForInteger("Enter amount to request: ");
+
+            try
+            {
+                Transfer newtransfer = tenmoApiService.RequestTeBucks(transfer);
+            }
+            catch (Exception ex)
+            {
+                console.PrintError(ex.Message);
+            }
+            console.Pause();
+        }
+        private void ShowPendingRequests()
+        {
+            try
+            {
+                Dictionary<string, Transfer> pending = tenmoApiService.ViewPendingTransfers();
+                console.PrintPending(pending);
+            }
+            catch (Exception ex)
+            {
+                console.PrintError(ex.Message);
+            }
+            console.Pause();
+        }
+
+        private void RespondToRequest()
+        {
+            int selectedTransfer = console.PromptForInteger("Please enter transfer ID to approve or deny (0 to cancel): ");
+            if (selectedTransfer == 0)
+            {
+                return;
+            }
+            Console.WriteLine("1 - Approve");
+            Console.WriteLine("2 - Deny");
+            int approveOrDeny = console.PromptForInteger("Select 1 or 2: ");
+            
+            if (approveOrDeny == 1)
+            {
+                try
+                {
+                    bool approveResult = tenmoApiService.RespondToTransferRequest(selectedTransfer);
+                    if (approveResult)
+                    {
+                        console.PrintSuccess("Transfer has been approved.");
+                    }
+                    else
+                    {
+                        console.PrintError("Transfer failed.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    console.PrintError(ex.Message);
+                }
+            }
+            else if (approveOrDeny == 2)
+            {
+                try
+                {
+                    bool denyResult = tenmoApiService.DenyTransferByUser(selectedTransfer);
+                    if (denyResult)
+                    {
+                        Console.WriteLine("Transfer has been denied.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    console.PrintError(ex.Message);
+                }
+            }
+            else
+            {
+                console.PrintError("Invalid selection. Please try again.");                
+            }
+            console.Pause();
+        }
+
     }
 }
