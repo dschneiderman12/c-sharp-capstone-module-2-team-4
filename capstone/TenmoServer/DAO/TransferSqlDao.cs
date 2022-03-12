@@ -22,9 +22,12 @@ namespace TenmoServer.DAO
             Transfer transfer = null;
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
+
                 conn.Open();
-                SqlCommand cmd = new SqlCommand(@"SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount
+                SqlCommand cmd = new SqlCommand(@"SELECT username, transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount
                                                 FROM transfer
+                                                JOIN account ON account.account_id = transfer.account_from
+                                                JOIN tenmo_user ON tenmo_user.user_id = account.user_id
                                                 WHERE transfer_id = @transfer_id", conn);
                 cmd.Parameters.AddWithValue("@transfer_id", transferId);
 
@@ -32,6 +35,7 @@ namespace TenmoServer.DAO
                 if (reader.Read())
                 {
                     transfer = createTransferFromReader(reader);
+                    transfer.UserFrom = Convert.ToString(reader["username"]);
                 }
             }
             return transfer;
@@ -76,6 +80,7 @@ namespace TenmoServer.DAO
             }
             return GetTransfer(newTransferId);
         }
+
 
         public void ExecuteTransfer(Transfer transfer)
         {
@@ -142,37 +147,47 @@ namespace TenmoServer.DAO
             return users;
         }
 
-        public Dictionary<Transfer, string> ListCompletedTransfers(int accountId)
+        public Dictionary<string, Transfer> ListCompletedTransfers(int accountId)
         {
-            Dictionary<Transfer, string> userTransfers = new Dictionary<Transfer, string>();
+            Dictionary<string, Transfer> userTransfers = new Dictionary<string, Transfer>();
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                
+
                 SqlCommand cmd = new SqlCommand(@"SELECT username, transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount
                                                 FROM transfer
                                                 JOIN account ON account.account_id = transfer.account_from
                                                 JOIN tenmo_user ON tenmo_user.user_id = account.user_id
-                                                WHERE transfer_status_id = 2 AND account_to = @account_id
+                                                WHERE transfer_status_id = 2 AND account_to = @account_id                                                
                                                 UNION
                                                 SELECT username, transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount
                                                 FROM transfer
                                                 JOIN account ON account.account_id = transfer.account_to
                                                 JOIN tenmo_user ON tenmo_user.user_id = account.user_id
                                                 WHERE transfer_status_id = 2 AND account_from = @account_id
-                                                ", conn);
+                                                ORDER BY transfer_id ASC;", conn);
                 cmd.Parameters.AddWithValue("@account_id", accountId);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Transfer transfer = createTransferFromReader(reader);                    
-                    string user = Convert.ToString(reader["username"]);
-                    userTransfers[transfer] = user;
+                    string idAsString = Convert.ToString(reader["transfer_id"]);
+                    Transfer transfer = createTransferFromReader(reader);
+                    if (transfer.AccountToId == accountId)
+                    {
+                        transfer.UserFrom = Convert.ToString(reader["username"]);
+                        //transfer.UserTo = User.Identity.Name;
+                    }
+                    else if (transfer.AccountFromId == accountId)
+                    {
+                        transfer.UserTo = Convert.ToString(reader["username"]);
+                    }
+                    userTransfers[idAsString] = transfer;
                 }
             }
             return userTransfers;
-        }          
-       
+        }
+
         private Transfer createTransferFromReader(SqlDataReader reader)
         {
             Transfer transfer = new Transfer();

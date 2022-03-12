@@ -24,15 +24,44 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
-        public Dictionary<Transfer, string> ViewTransfers()
+        public Dictionary<string, Transfer> ViewTransfers()
         {
             RestRequest request = new RestRequest($"transfer/completed");
-            IRestResponse<Dictionary<Transfer, string>> response = client.Get<Dictionary<Transfer, string>>(request);
+            IRestResponse<Dictionary<string, Transfer>> response = client.Get<Dictionary<string, Transfer>>(request);
 
             CheckForError(response);
-
-            return (response.Data);
-
+            return response.Data;
         }
+
+        public Transfer GetTransferById(int transferId)
+        {
+            RestRequest request = new RestRequest($"transfer/{transferId}");
+            IRestResponse<Transfer> response = client.Get<Transfer>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
+
+
+        public Transfer SendTeBucks(Transfer transfer)
+        {
+
+            RestRequest request = new RestRequest($"transfer/send");
+            request.AddJsonBody(transfer);
+            IRestResponse<Transfer> response = client.Post<Transfer>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
+
+        public List<User> ListUsersForTransfers()
+        {
+            RestRequest request = new RestRequest($"transfer/users");
+            IRestResponse<List<User>> response = client.Get<List<User>>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
+
     }
 }

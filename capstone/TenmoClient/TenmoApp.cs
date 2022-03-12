@@ -93,7 +93,9 @@ namespace TenmoClient
 
             if (menuSelection == 4)
             {
-                //SendTeBucks();
+                ShowUsersToSendBucks();
+
+                SendTEBucks();
                 // Send TE bucks
             }
 
@@ -190,9 +192,60 @@ namespace TenmoClient
         {
             try
             {
-                Dictionary<Transfer,string> transfers = tenmoApiService.ViewTransfers();
+                Dictionary<string, Transfer> transfers = tenmoApiService.ViewTransfers();
                 console.PrintTransfers(transfers);
 
+            }
+            catch (Exception ex)
+            {
+                console.PrintError(ex.Message);
+            }
+
+            console.Pause();
+        }
+
+        private void ShowTransferById()
+        {
+            try
+            {
+                Dictionary<string, Transfer> transfers = tenmoApiService.ViewTransfers();
+                console.PrintTransfer(transfers);
+            }
+            catch (Exception ex)
+            {
+                console.PrintError(ex.Message);
+            }
+
+            console.Pause();
+        }
+
+        private void ShowUsersToSendBucks()
+        {
+            try
+            {
+                List<User> users = tenmoApiService.ListUsersForTransfers();
+                console.PrintUsers(users);
+            }
+            catch (Exception ex)
+            {
+                console.PrintError(ex.Message);
+            }
+
+            console.Pause();
+
+        }
+
+        private void SendTEBucks()
+        {
+            Transfer transfer = new Transfer();
+
+            transfer.AccountToId = console.PromptForInteger("Id of the user you are requesting from[0]");
+            transfer.TransferAmount = console.PromptForInteger("Enter amount to request");
+
+            try
+            {
+
+                Transfer newtransfer = tenmoApiService.SendTeBucks(transfer);
             }
             catch (Exception ex)
             {

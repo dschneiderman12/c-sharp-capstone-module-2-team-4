@@ -11,10 +11,11 @@ namespace TenmoServer.DAO
     {
         public Transfer GetTransfer(int transferId);
         public Transfer CreateRequest(Transfer newTransfer);
-        public Transfer CreateSend(Transfer transfer);
+        public Transfer CreateSend(Transfer newTransfer);
         public void ExecuteTransfer(Transfer transfer);
         public void DenyTransfer(Transfer transfer);
         public List<User> ListUsers(string username);
-        public Dictionary<Transfer, string> ListCompletedTransfers(int accountId);
+        public Dictionary<string, Transfer> ListCompletedTransfers(int accountId);
     }
 }
+

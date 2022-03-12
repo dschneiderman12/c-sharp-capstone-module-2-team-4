@@ -63,22 +63,62 @@ namespace TenmoClient.Services
             Console.WriteLine("---------");
         }
 
-        public void PrintTransfers(Dictionary<Transfer, string> transfers)
+        public void PrintTransfers(Dictionary<string, Transfer> transfers)
         {
             Console.Clear();
             Console.WriteLine("");
-            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("---------------------------------------------------");
             Console.WriteLine($"Transfer ID             From/to             Amount");
 
-            foreach(KeyValuePair<Transfer,string> transfer in transfers)
+            foreach (KeyValuePair<string, Transfer> transfer in transfers)
             {
-                Console.WriteLine($"{transfer.Key.TransferId}           {transfer.Value}        {transfer.Key.TransferAmount}");
+                if (transfer.Value.UserFrom == null)
+                {
+                    Console.WriteLine($"{transfer.Key}                To: {transfer.Value.UserTo}            {transfer.Value.TransferAmount.ToString("C")}");
+                }
+                else if (transfer.Value.UserTo == null)
+                {
+                    Console.WriteLine($"{transfer.Key}              From: {transfer.Value.UserFrom}            {transfer.Value.TransferAmount.ToString("C")}");
+                }
             }
-        
 
-            Console.WriteLine("---------");
+            Console.WriteLine("---------------------------------------------------");
         }
 
+
+
+        public void PrintTransfer(Dictionary<string, Transfer> transferList)
+        {
+            string idSelected = Console.ReadLine();
+            Transfer info = transferList[idSelected];
+
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("Transfer Details");
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine($"Id: {info.TransferId}");
+            Console.WriteLine($"From: {info.UserFrom}");
+            Console.WriteLine($"To: {info.UserTo}");
+            Console.WriteLine("Status: Approved");
+            Console.WriteLine($"Amount: {info.TransferAmount.ToString("C")}");
+        }
+
+        public void PrintUsers(List<User> users)
+        {
+            Console.WriteLine("Please choose an option: 4");
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("------------------Users----------------------");
+            Console.WriteLine("|      Id   |   Username              ");
+            Console.WriteLine("--------------------------------------------");
+            foreach (User user in users)
+            {
+                Console.WriteLine($"      {user.UserId}  |  {user.Username}");
+            }
+        }
+
+        public void PrintSendingOptions()
+        {
+            Console.WriteLine("Id of the user you are requesting from[0]: ");
+        }
 
 
     }
