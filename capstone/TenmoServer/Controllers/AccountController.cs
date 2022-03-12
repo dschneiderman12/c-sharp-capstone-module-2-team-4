@@ -23,7 +23,7 @@ namespace TenmoServer.Controllers
         }
 
 
-         [HttpGet("balance/{accountName}")]
+        [HttpGet("balance/{accountName}")]
 
         public ActionResult GetBalance(string accountName)
         {

@@ -20,7 +20,6 @@ namespace TenmoClient.Services
             IRestResponse<decimal> response = client.Get<decimal>(request);
 
             CheckForError(response);
-
             return response.Data;
         }
 

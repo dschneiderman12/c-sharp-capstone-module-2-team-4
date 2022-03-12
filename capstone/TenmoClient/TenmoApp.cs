@@ -81,7 +81,10 @@ namespace TenmoClient
 
             if (menuSelection == 2)
             {
-               ShowPastTransfers();
+                ShowPastTransfers();
+
+                Console.WriteLine("Please enter transfer ID to view details (0 to cancel): ");
+                ShowTransferById();
                 // View your past transfers
             }
 

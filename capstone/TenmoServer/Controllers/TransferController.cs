@@ -80,7 +80,6 @@ namespace TenmoServer.Controllers
             int accountId = accountDao.GetAccountNumber(username);
             string userIdString = User.FindFirst("sub")?.Value;
             int userId = int.Parse(userIdString);
-
             Transfer transferToUpdate = transferDao.GetTransfer(transferId);
             decimal balanceFromAccount = accountDao.GetBalance(username, userId).Item1;
 

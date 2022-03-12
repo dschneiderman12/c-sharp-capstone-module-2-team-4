@@ -59,7 +59,7 @@ namespace TenmoClient.Services
             Console.WriteLine("");
             Console.WriteLine($"Hello, {username}!");
             Console.WriteLine($"Your current account balance is: {balance.ToString("C")}");
-    
+
             Console.WriteLine("---------");
         }
 
@@ -118,6 +118,21 @@ namespace TenmoClient.Services
         public void PrintSendingOptions()
         {
             Console.WriteLine("Id of the user you are requesting from[0]: ");
+        }
+
+        public void PrintTransfer(Dictionary<string, Transfer> transferList)
+        {
+            string idSelected = Console.ReadLine();
+            Transfer info = transferList[idSelected];
+
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("Transfer Details");
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine($"Id: {info.TransferId}");
+            Console.WriteLine($"From: {info.UserFrom}");
+            Console.WriteLine($"To: {info.UserTo}");
+            Console.WriteLine("Status: Approved");
+            Console.WriteLine($"Amount: {info.TransferAmount.ToString("C")}");
         }
 
 
