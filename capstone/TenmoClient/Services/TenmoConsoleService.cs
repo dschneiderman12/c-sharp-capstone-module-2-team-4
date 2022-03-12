@@ -86,7 +86,41 @@ namespace TenmoClient.Services
         }
 
 
-        public void PrintTransfer(Dictionary<string, Transfer> transferList, string idSelected)
+
+        public void PrintTransfer(Dictionary<string, Transfer> transferList)
+        {
+            string idSelected = Console.ReadLine();
+            Transfer info = transferList[idSelected];
+
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("Transfer Details");
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine($"Id: {info.TransferId}");
+            Console.WriteLine($"From: {info.UserFrom}");
+            Console.WriteLine($"To: {info.UserTo}");
+            Console.WriteLine("Status: Approved");
+            Console.WriteLine($"Amount: {info.TransferAmount.ToString("C")}");
+        }
+
+        public void PrintUsers(List<User> users)
+        {
+            Console.WriteLine("Please choose an option: 4");
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("------------------Users----------------------");
+            Console.WriteLine("|      Id   |   Username              ");
+            Console.WriteLine("--------------------------------------------");
+            foreach (User user in users)
+            {
+                Console.WriteLine($"      {user.UserId}  |  {user.Username}");
+            }
+        }
+
+        public void PrintSendingOptions()
+        {
+            Console.WriteLine("Id of the user you are requesting from[0]: ");
+        }
+
+        public void PrintTransfer(Dictionary<string, Transfer> transferList)
         {
             Transfer info = transferList[idSelected];
 

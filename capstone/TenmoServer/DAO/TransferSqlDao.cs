@@ -49,8 +49,9 @@ namespace TenmoServer.DAO
                 conn.Open();
 
                 SqlCommand cmd = new SqlCommand(@"INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)
-                                                OUTPUT INSERTED.transfer_id
-                                                VALUES (1, 1, @account_from, @account_to, @amount);", conn);
+                                                 OUTPUT INSERTED.transfer_id
+                                                 VALUES (1, 1, (SELECT account_id FROM account WHERE user_id=@account_from), 
+                                                (SELECT account_id FROM account WHERE user_id=@account_to), @amount);", conn);
                 cmd.Parameters.AddWithValue("@account_from", newTransfer.AccountFromId);
                 cmd.Parameters.AddWithValue("@account_to", newTransfer.AccountToId);
                 cmd.Parameters.AddWithValue("@amount", newTransfer.TransferAmount);
@@ -70,7 +71,8 @@ namespace TenmoServer.DAO
 
                 SqlCommand cmd = new SqlCommand(@"INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)
                                                 OUTPUT INSERTED.transfer_id
-                                                VALUES (2, 2, @account_from, @account_to, @amount);", conn);
+                                                VALUES (2, 2, (SELECT account_id FROM account WHERE user_id=@account_from), 
+                                                (SELECT account_id FROM account WHERE user_id=@account_to), @amount);", conn);
                 cmd.Parameters.AddWithValue("@account_from", newTransfer.AccountFromId);
                 cmd.Parameters.AddWithValue("@account_to", newTransfer.AccountToId);
                 cmd.Parameters.AddWithValue("@amount", newTransfer.TransferAmount);
@@ -79,6 +81,7 @@ namespace TenmoServer.DAO
             }
             return GetTransfer(newTransferId);
         }
+
 
         public void ExecuteTransfer(Transfer transfer)
         {
@@ -148,7 +151,7 @@ namespace TenmoServer.DAO
         public Dictionary<string, Transfer> ListCompletedTransfers(int accountId)
         {
             Dictionary<string, Transfer> userTransfers = new Dictionary<string, Transfer>();
-
+            
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();

@@ -7,7 +7,6 @@ namespace TenmoServer.Models
 {
     public class Transfer
     {
-
         public int TransferId { get; set; }
         public int TransferStatusId { get; set; }
         public int TransferTypeId { get; set; }
@@ -21,7 +20,7 @@ namespace TenmoServer.Models
         {
 
         }
-        public Transfer(int transferId, int transferStatusId, int transferTypeId, int accountFromId,int accountToId, decimal transferAmount)
+        public Transfer(int transferId, int transferStatusId, int transferTypeId, int accountFromId, int accountToId, decimal transferAmount)
         {
 
             TransferId = transferId;

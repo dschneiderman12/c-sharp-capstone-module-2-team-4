@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Newtonsoft.Json;
+using RestSharp;
 using System.Collections.Generic;
 using TenmoClient.Models;
 
@@ -39,5 +40,27 @@ namespace TenmoClient.Services
             CheckForError(response);
             return response.Data;
         }
+
+
+        public Transfer SendTeBucks(Transfer transfer)
+        {
+
+            RestRequest request = new RestRequest($"transfer/send");
+            request.AddJsonBody(transfer);
+            IRestResponse<Transfer> response = client.Post<Transfer>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
+
+        public List<User> ListUsersForTransfers()
+        {
+            RestRequest request = new RestRequest($"transfer/users");
+            IRestResponse<List<User>> response = client.Get<List<User>>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
+
     }
 }
