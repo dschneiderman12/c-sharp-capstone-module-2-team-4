@@ -21,7 +21,7 @@ namespace TenmoClient.Models
         {
 
         }
-        public Transfer(int transferId, int transferStatusId, int transferTypeId, int accountFromId,int accountToId, decimal transferAmount)
+        public Transfer(int transferId, int transferStatusId, int transferTypeId, int accountFromId, int accountToId, decimal transferAmount)
         {
 
             TransferId = transferId;
@@ -31,6 +31,5 @@ namespace TenmoClient.Models
             AccountToId = accountToId;
             TransferAmount = transferAmount;
         }
-
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TenmoServer.DAO;
 using TenmoServer.Models;
-using System.Runtime.Serialization.Json;
 
 namespace TenmoServer.Controllers
 {
@@ -49,11 +51,14 @@ namespace TenmoServer.Controllers
         [HttpPost("send")] //creates a transfer send, checks balance, and executes or denies all in one method
         public ActionResult<Transfer> NewTransferSend(Transfer transfer)
         {
-            Transfer sendMoney = transferDao.CreateSend(transfer);
-
             string username = User.FindFirst("name")?.Value;
             string userIdString = User.FindFirst("sub")?.Value;
             int userId = int.Parse(userIdString);
+
+            transfer.AccountFromId = userId;
+            Transfer sendMoney = transferDao.CreateSend(transfer);
+
+
             decimal balanceFromAccount = accountDao.GetBalance(username, userId).Item1;
 
             if (balanceFromAccount >= sendMoney.TransferAmount)
@@ -75,7 +80,6 @@ namespace TenmoServer.Controllers
             int accountId = accountDao.GetAccountNumber(username);
             string userIdString = User.FindFirst("sub")?.Value;
             int userId = int.Parse(userIdString);
-            
             Transfer transferToUpdate = transferDao.GetTransfer(transferId);
             decimal balanceFromAccount = accountDao.GetBalance(username, userId).Item1;
 
