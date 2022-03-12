@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Newtonsoft.Json;
+using RestSharp;
 using System.Collections.Generic;
 using TenmoClient.Models;
 
@@ -30,7 +31,7 @@ namespace TenmoClient.Services
 
             CheckForError(response);
 
-            return response.Data;
+            return (response.Data);
 
         }
     }

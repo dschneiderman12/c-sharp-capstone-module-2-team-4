@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TenmoServer.DAO;
 using TenmoServer.Models;
-using System.Runtime.Serialization.Json;
 
 namespace TenmoServer.Controllers
 {
@@ -68,10 +70,8 @@ namespace TenmoServer.Controllers
         {
             string username = User.FindFirst("name")?.Value;
             int accountId = accountDao.GetAccountNumber(username);
-
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Dictionary<Transfer, string>));
-
-            return transferDao.ListCompletedTransfers(serializer);
+            
+            return transferDao.ListCompletedTransfers(accountId);
         }
 
         [HttpGet("{transferId}")]
