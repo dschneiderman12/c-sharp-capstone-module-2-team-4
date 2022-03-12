@@ -31,10 +31,10 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
-        public Transfer GetTransferById(int transferId)
+        public Dictionary<string, Transfer> GetTransferById(string transferId)
         {
             RestRequest request = new RestRequest($"transfer/{transferId}");
-            IRestResponse<Transfer> response = client.Get<Transfer>(request);
+            IRestResponse<Dictionary<string, Transfer>> response = client.Get<Dictionary<string, Transfer>>(request);
 
             CheckForError(response);
             return response.Data;

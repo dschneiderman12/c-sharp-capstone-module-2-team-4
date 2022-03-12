@@ -86,9 +86,8 @@ namespace TenmoClient.Services
         }
 
 
-        public void PrintTransfer(Dictionary<string, Transfer> transferList)
+        public void PrintTransfer(Dictionary<string, Transfer> transferList, string idSelected)
         {
-            string idSelected = Console.ReadLine();
             Transfer info = transferList[idSelected];
 
             Console.WriteLine("--------------------------------------------");
