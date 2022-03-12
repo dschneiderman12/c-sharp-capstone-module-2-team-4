@@ -120,7 +120,7 @@ namespace TenmoClient.Services
             Console.WriteLine("Id of the user you are requesting from[0]: ");
         }
 
-        public void PrintTransfer(Dictionary<string, Transfer> transferList)
+        public void PrintTransfer(Dictionary<string, Transfer> transferList, string idSelected)
         {
             Transfer info = transferList[idSelected];
 
