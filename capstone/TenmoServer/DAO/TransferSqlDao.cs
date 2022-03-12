@@ -10,7 +10,7 @@ namespace TenmoServer.DAO
 {
     public class TransferSqlDao : ITransferDao
     {
-        private readonly string connectionString;        
+        private readonly string connectionString;
 
         public TransferSqlDao(string dbConnectionString)
         {
@@ -35,7 +35,6 @@ namespace TenmoServer.DAO
                 if (reader.Read())
                 {
                     transfer = createTransferFromReader(reader);
-                    transfer.UserFrom = Convert.ToString(reader["username"]);
                 }
             }
             return transfer;
@@ -152,6 +151,7 @@ namespace TenmoServer.DAO
         public Dictionary<string, Transfer> ListCompletedTransfers(int accountId)
         {
             Dictionary<string, Transfer> userTransfers = new Dictionary<string, Transfer>();
+            
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -177,7 +177,6 @@ namespace TenmoServer.DAO
                     if (transfer.AccountToId == accountId)
                     {
                         transfer.UserFrom = Convert.ToString(reader["username"]);
-                        //transfer.UserTo = User.Identity.Name;
                     }
                     else if (transfer.AccountFromId == accountId)
                     {

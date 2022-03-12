@@ -80,6 +80,7 @@ namespace TenmoServer.Controllers
             int accountId = accountDao.GetAccountNumber(username);
             string userIdString = User.FindFirst("sub")?.Value;
             int userId = int.Parse(userIdString);
+            
             Transfer transferToUpdate = transferDao.GetTransfer(transferId);
             decimal balanceFromAccount = accountDao.GetBalance(username, userId).Item1;
 
@@ -105,36 +106,28 @@ namespace TenmoServer.Controllers
             string username = User.FindFirst("name")?.Value;
             int accountId = accountDao.GetAccountNumber(username);
             return transferDao.ListCompletedTransfers(accountId);
-            //Dictionary<string, Transfer> transferList = transferDao.ListCompletedTransfers(accountId);
-            //foreach(KeyValuePair<string, Transfer> transfer in transferList)
-            //{
-            //    if (transfer.Value.UserFrom == null)
-            //    {
-            //        transfer.Value.UserFrom = User.Identity.Name;
-            //    }
-            //    else if (transfer.Value.UserTo == null)
-            //    {
-            //        transfer.Value.UserTo = User.Identity.Name;
-            //    }
-            //}
-            //return transferList;
         }
 
         [HttpGet("{transferId}")]
-        public ActionResult<Transfer> GetTransferById(int transferId)
+        public Dictionary<string, Transfer> GetTransferById()
         {
             string username = User.FindFirst("name")?.Value;
             int accountId = accountDao.GetAccountNumber(username);
-            Transfer transfer = transferDao.GetTransfer(transferId);
+            //return transferDao.ListCompletedTransfers(accountId);
+            Dictionary<string, Transfer> transferList = transferDao.ListCompletedTransfers(accountId);
 
-            if (transfer != null)
+            foreach (KeyValuePair<string, Transfer> transfer in transferList)
             {
-                return transfer;
+                if (transfer.Value.UserFrom == null)
+                {
+                    transfer.Value.UserFrom = User.Identity.Name;
+                }
+                if (transfer.Value.UserTo == null)
+                {
+                    transfer.Value.UserTo = User.Identity.Name;
+                }
             }
-            else
-            {
-                return NotFound();
-            }
+            return transferList;
         }
     }
 }

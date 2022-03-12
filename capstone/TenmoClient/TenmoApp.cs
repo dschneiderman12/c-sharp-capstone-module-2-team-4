@@ -84,7 +84,9 @@ namespace TenmoClient
                 ShowPastTransfers();
 
                 Console.WriteLine("Please enter transfer ID to view details (0 to cancel): ");
-                ShowTransferById();
+                string idSelected = Console.ReadLine();
+                ShowTransferById(idSelected);
+
                 // View your past transfers
             }
 
@@ -207,12 +209,12 @@ namespace TenmoClient
             console.Pause();
         }
 
-        private void ShowTransferById()
+        private void ShowTransferById(string id)
         {
             try
             {
-                Dictionary<string, Transfer> transfers = tenmoApiService.ViewTransfers();
-                console.PrintTransfer(transfers);
+                Dictionary<string, Transfer> transfers = tenmoApiService.GetTransferById(id);
+                console.PrintTransfer(transfers, id);
             }
             catch (Exception ex)
             {
