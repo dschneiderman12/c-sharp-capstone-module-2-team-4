@@ -54,7 +54,7 @@ namespace TenmoServer.DAO
                 cmd.Parameters.AddWithValue("@account_from", newTransfer.AccountFromId);
                 cmd.Parameters.AddWithValue("@account_to", newTransfer.AccountToId);
                 cmd.Parameters.AddWithValue("@amount", newTransfer.TransferAmount);
-
+                
                 newTransferId = Convert.ToInt32(cmd.ExecuteScalar());
             }
             return GetTransfer(newTransferId);

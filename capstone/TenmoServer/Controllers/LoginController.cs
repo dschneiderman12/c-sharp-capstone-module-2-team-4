@@ -69,10 +69,6 @@ namespace TenmoServer.Controllers
 
             return result;
 
-            //User testUser = new User();
-            //testUser.Username = User.Identity.Name;
-
-            //Viewbag.UserId
         }
 
     }

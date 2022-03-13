@@ -2,6 +2,7 @@
 {
     class Program
     {
+        //private const string apiUrl = "https://localhost:5001/";
         private const string apiUrl = "https://localhost:44315/";
         static void Main()
         {
