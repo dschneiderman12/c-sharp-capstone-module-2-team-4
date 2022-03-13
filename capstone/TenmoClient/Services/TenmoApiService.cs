@@ -71,12 +71,24 @@ namespace TenmoClient.Services
 
         public Dictionary<string, Transfer> ViewPendingTransfers()
         {
-            RestRequest request = new RestRequest("transfer/pending");
+            RestRequest request = new RestRequest("transfer/sent/pending");
+
             IRestResponse<Dictionary<string, Transfer>> response = client.Get<Dictionary<string, Transfer>>(request);
 
             CheckForError(response);
             return response.Data;
         }
+
+        public Dictionary<string, Transfer> ViewPendingSentTransfers()
+        {
+            RestRequest request = new RestRequest("transfer/request/pending");
+
+            IRestResponse<Dictionary<string, Transfer>> response = client.Get<Dictionary<string, Transfer>>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
+
 
         public bool RespondToTransferRequest(int transferId)
         {

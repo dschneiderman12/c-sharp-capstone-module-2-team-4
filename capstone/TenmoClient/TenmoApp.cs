@@ -93,6 +93,7 @@ namespace TenmoClient
             if (menuSelection == 3)
             {
                 ShowPendingRequests();
+
                 // View your pending requests
            
             }
@@ -259,7 +260,13 @@ namespace TenmoClient
         {
             Transfer transfer = new Transfer();
 
-            transfer.AccountFromId = console.PromptForInteger("\nId of the user you are requesting from");
+            int selectedTransfer = console.PromptForInteger("Please enter Id of the user you are requesting from(0 to cancel)");
+            if (selectedTransfer == 0)
+            {
+                return;
+            }
+
+            transfer.AccountFromId = selectedTransfer;
             transfer.TransferAmount = console.PromptForInteger("Enter amount to request");
 
             try
@@ -275,9 +282,12 @@ namespace TenmoClient
             }
             console.Pause();
         }
+
+
         private void ShowPendingRequests()
         {
-            Dictionary<string, Transfer> pending = tenmoApiService.ViewPendingTransfers();
+            ShowPendingSentRequests();
+            Dictionary<string, Transfer> pending = tenmoApiService.ViewPendingSentTransfers();
 
             try
             {
@@ -299,12 +309,35 @@ namespace TenmoClient
             {
                 RespondToRequest();
             }
-            
-         
+                    
+        }
+
+        private void ShowPendingSentRequests()
+        {
+            Dictionary<string, Transfer> pending = tenmoApiService.ViewPendingTransfers();
+
+            try
+            {
+                console.PrintPendingSentRequests(pending);
+            }
+            catch (Exception ex)
+            {
+                console.PrintError(ex.Message);
+            }
+
+            if (pending.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("You do not have any sent request.\n");
+                Console.ResetColor();
+                //console.Pause();
+            }
+
         }
 
         private void RespondToRequest()
         {
+            
             int selectedTransfer = console.PromptForInteger("Please enter transfer ID to approve or deny (0 to cancel)");
             if (selectedTransfer == 0)
             {

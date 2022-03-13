@@ -185,7 +185,7 @@ namespace TenmoServer.DAO
             return userTransfers;
         }
 
-        public Dictionary<string, Transfer> ListPendingTransfers(int accountId)
+        public Dictionary<string, Transfer> ListPendingTransfersFromAccount(int accountId)
         {
             Dictionary<string, Transfer> pendingTransfers = new Dictionary<string, Transfer>();
 
@@ -197,6 +197,31 @@ namespace TenmoServer.DAO
                                                 JOIN account ON account.account_id = transfer.account_to
                                                 JOIN tenmo_user ON tenmo_user.user_id = account.user_id
                                                 WHERE transfer_status_id = 1 AND account_from = @account_id;", conn);
+                cmd.Parameters.AddWithValue("@account_id", accountId);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string idAsString = Convert.ToString(reader["transfer_id"]);
+                    Transfer transfer = createTransferFromReader(reader);
+                    transfer.UserTo = Convert.ToString(reader["username"]);
+                    pendingTransfers[idAsString] = transfer;
+                }
+            }
+            return pendingTransfers;
+        }
+
+        public Dictionary<string, Transfer> ListPendingTransfersToAccount(int accountId)
+        {
+            Dictionary<string, Transfer> pendingTransfers = new Dictionary<string, Transfer>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(@"SELECT username, transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount
+                                                FROM transfer
+                                                JOIN account ON account.account_id = transfer.account_from
+                                                JOIN tenmo_user ON tenmo_user.user_id = account.user_id
+                                                WHERE transfer_status_id = 1 AND account_to = @account_id;", conn);
                 cmd.Parameters.AddWithValue("@account_id", accountId);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())

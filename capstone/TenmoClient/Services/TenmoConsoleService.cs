@@ -123,10 +123,14 @@ namespace TenmoClient.Services
 
         public void PrintPending(Dictionary<string, Transfer> pendingTransfers)
         {
-            Console.Clear();
+            //Console.Clear();
             Console.WriteLine("");
             Console.WriteLine("---------------------------------------------------");
-            Console.WriteLine($"Transfer ID             To             Amount");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Pending - Received Transfer Requests");
+            Console.ResetColor();
+            Console.WriteLine("---------------------------------------------------");
+            Console.WriteLine($"Transfer ID             From             Amount");
 
             foreach (KeyValuePair<string, Transfer> transfer in pendingTransfers)
             {
@@ -135,9 +139,26 @@ namespace TenmoClient.Services
             Console.WriteLine("---------------------------------------------------");
         }
 
-        //public void PrintSendingOptions()
-        //{
-        //    Console.WriteLine("Id of the user you are requesting from[0]: ");
-        //}
+
+
+        public void PrintPendingSentRequests(Dictionary<string, Transfer> pendingTransfers)
+        {
+            Console.Clear();
+            Console.WriteLine("");
+            Console.WriteLine("---------------------------------------------------");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Pending - Sent Transfer Requests");
+            Console.ResetColor();
+            Console.WriteLine("---------------------------------------------------");
+            Console.WriteLine($"Transfer ID             To             Amount");
+
+            foreach (KeyValuePair<string, Transfer> transfer in pendingTransfers)
+            {
+                Console.WriteLine($"{transfer.Key}                {transfer.Value.UserTo}              {transfer.Value.TransferAmount.ToString("C")}");
+            }
+            Console.WriteLine("--------------------------------------------------- \n");
+        }
+
+
     }
 }
