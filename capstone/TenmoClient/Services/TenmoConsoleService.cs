@@ -12,6 +12,14 @@ namespace TenmoClient.Services
         public void PrintLoginMenu()
         {
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(@"                           
+ _____ _____               
+|_   _|   __|___ _____ ___ 
+  | | |   __|   |     | . |
+  |_| |_____|_|_|_|_|_|___|
+                           ");
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("");
             Console.WriteLine("Welcome to TEnmo!");
             Console.WriteLine("1: Login");

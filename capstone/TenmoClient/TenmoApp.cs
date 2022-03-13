@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TenmoClient.Models;
 using TenmoClient.Services;
+using System.Data.SqlClient;
 
 namespace TenmoClient
 {
@@ -35,7 +36,7 @@ namespace TenmoClient
         private bool RunUnauthenticated()
         {
             console.PrintLoginMenu();
-            int menuSelection = console.PromptForInteger("Please choose an option", 0, 2, 1);
+            int menuSelection = console.PromptForInteger("Please choose an option", 0, 2);
             while (true)
             {
                 if (menuSelection == 0)
@@ -195,7 +196,7 @@ namespace TenmoClient
             {
                 console.PrintError(ex.Message);
             }
-            console.Pause();
+            //console.Pause();
         }
         private void ShowTransferById(string id)
         {            
@@ -210,7 +211,10 @@ namespace TenmoClient
             }
             catch (Exception ex)
             {
-                console.PrintError(ex.Message);
+                console.PrintError("Transfer Id not found. Please try again.");
+                //Console.Write("Transfer Id:"); 
+                //string idSelected = Console.ReadLine();
+                //ShowTransferById(idSelected); Doesn't work (stacks console.pause for as many errors)
             }
             console.Pause();
         }
@@ -225,7 +229,7 @@ namespace TenmoClient
             {
                 console.PrintError(ex.Message);
             }
-            console.Pause();
+            //console.Pause();
         }
         private void SendTEBucks()
         {
@@ -237,10 +241,13 @@ namespace TenmoClient
             try
             {
                 Transfer newtransfer = tenmoApiService.SendTeBucks(transfer);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Send successful!");
+                Console.ResetColor();
             }
-            catch (Exception ex)
+            catch (Exception exc)
             {
-                console.PrintError(ex.Message);
+                console.PrintError("Send request denied. Please enter valid user and transfer amount.");
             }
             console.Pause();
         }
@@ -257,7 +264,7 @@ namespace TenmoClient
             }
             catch (Exception ex)
             {
-                console.PrintError(ex.Message);
+                console.PrintError("Request denied. Please enter a valid user Id and transfer amount.");
             }
             console.Pause();
         }
@@ -272,7 +279,7 @@ namespace TenmoClient
             {
                 console.PrintError(ex.Message);
             }
-            console.Pause();
+            //console.Pause(); UX-UI test
         }
 
         private void RespondToRequest()
@@ -302,7 +309,10 @@ namespace TenmoClient
                 }
                 catch (Exception ex)
                 {
-                    console.PrintError(ex.Message);
+                    //Console.ForegroundColor = ConsoleColor.Red;
+                    console.PrintError("Transfer ID not found. Please try again.");
+                    //Console.ResetColor();
+                    //console.PrintError(ex.Message); UX UI edit
                 }
             }
             else if (approveOrDeny == 2)
@@ -317,7 +327,7 @@ namespace TenmoClient
                 }
                 catch (Exception ex)
                 {
-                    console.PrintError(ex.Message);
+                    console.PrintError("Transfer ID not found.Please try again.");
                 }
             }
             else
