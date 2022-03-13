@@ -60,6 +60,7 @@ namespace TenmoServer.Controllers
             int userId = int.Parse(userIdString);
 
             transfer.AccountFromId = userId;
+            
             Transfer sendMoney = transferDao.CreateSend(transfer);
 
             decimal balanceFromAccount = accountDao.GetBalance(username, userId).Item1;
@@ -96,6 +97,7 @@ namespace TenmoServer.Controllers
                         return Ok();
                     }
                     transferDao.DenyTransfer(transferToUpdate);
+                    //throw new Exception(ex.ErrorCode, ex.message);
                     return BadRequest(new { message = "Balance too low to complete transfer. Transfer denied." });
                 }
                 else

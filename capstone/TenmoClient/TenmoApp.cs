@@ -245,7 +245,7 @@ namespace TenmoClient
                 Console.WriteLine("Send successful!");
                 Console.ResetColor();
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
                 console.PrintError("Send request denied. Please enter valid user and transfer amount.");
             }
