@@ -66,8 +66,11 @@ namespace TenmoClient.Services
             Console.Clear();
             Console.WriteLine("");
             Console.WriteLine($"Hello, {username}!");
+
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Your current account balance is: {balance.ToString("C")}");
-            Console.WriteLine("---------");
+            Console.ResetColor();
+            Console.WriteLine("--------- \n");
         }
 
         public void PrintTransfers(Dictionary<string, Transfer> transfers)

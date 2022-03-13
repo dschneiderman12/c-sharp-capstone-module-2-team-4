@@ -94,13 +94,15 @@ namespace TenmoClient
             {
                 ShowPendingRequests();
                 // View your pending requests
-                RespondToRequest();
+           
             }
 
             if (menuSelection == 4)
             {
                 ShowUsersToSendBucks();
-                SendTEBucks();
+                Console.WriteLine("\n Please enter transfer ID to send Bucks(0 to cancel)");
+                string idSelected = Console.ReadLine();
+                SendTEBucks(idSelected);
                 // Send TE bucks
             }
 
@@ -212,9 +214,7 @@ namespace TenmoClient
             catch (Exception ex)
             {
                 console.PrintError("Transfer Id not found. Please try again.");
-                //Console.Write("Transfer Id:"); 
-                //string idSelected = Console.ReadLine();
-                //ShowTransferById(idSelected); Doesn't work (stacks console.pause for as many errors)
+             
             }
             console.Pause();
         }
@@ -231,36 +231,43 @@ namespace TenmoClient
             }
             //console.Pause();
         }
-        private void SendTEBucks()
+        private void SendTEBucks(string idSelected)
         {
             Transfer transfer = new Transfer();
 
-            transfer.AccountToId = console.PromptForInteger("Id of the user you are sending to: ");
-            transfer.TransferAmount = console.PromptForInteger("Enter amount to send: ");
+            transfer.AccountToId = int.Parse(idSelected);
+            if (transfer.AccountToId != 0)
+            {
+                transfer.TransferAmount = console.PromptForInteger("Enter amount to send: ");
 
-            try
-            {
-                Transfer newtransfer = tenmoApiService.SendTeBucks(transfer);
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Send successful!");
-                Console.ResetColor();
+                try
+                {
+                    Transfer newtransfer = tenmoApiService.SendTeBucks(transfer);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Send successful!");
+                    Console.ResetColor();
+                }
+                catch (Exception ex)
+                {
+                    console.PrintError("Send request denied. Please enter valid user and transfer amount.");
+                }
             }
-            catch (Exception ex)
-            {
-                console.PrintError("Send request denied. Please enter valid user and transfer amount.");
-            }
+         
             console.Pause();
         }
         private void RequestTeBucks()
         {
             Transfer transfer = new Transfer();
 
-            transfer.AccountFromId = console.PromptForInteger("Id of the user you are requesting from: ");
-            transfer.TransferAmount = console.PromptForInteger("Enter amount to request: ");
+            transfer.AccountFromId = console.PromptForInteger("\nId of the user you are requesting from");
+            transfer.TransferAmount = console.PromptForInteger("Enter amount to request");
 
             try
             {
                 Transfer newtransfer = tenmoApiService.RequestTeBucks(transfer);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Request sent successfully!\n");
+                Console.ResetColor();
             }
             catch (Exception ex)
             {
@@ -270,21 +277,35 @@ namespace TenmoClient
         }
         private void ShowPendingRequests()
         {
+            Dictionary<string, Transfer> pending = tenmoApiService.ViewPendingTransfers();
+
             try
             {
-                Dictionary<string, Transfer> pending = tenmoApiService.ViewPendingTransfers();
                 console.PrintPending(pending);
             }
             catch (Exception ex)
             {
                 console.PrintError(ex.Message);
             }
-            //console.Pause(); UX-UI test
+
+            if (pending.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("You do not have any pending requests.\n");
+                Console.ResetColor();
+                console.Pause();
+            }
+            else
+            {
+                RespondToRequest();
+            }
+            
+         
         }
 
         private void RespondToRequest()
         {
-            int selectedTransfer = console.PromptForInteger("Please enter transfer ID to approve or deny (0 to cancel): ");
+            int selectedTransfer = console.PromptForInteger("Please enter transfer ID to approve or deny (0 to cancel)");
             if (selectedTransfer == 0)
             {
                 return;
