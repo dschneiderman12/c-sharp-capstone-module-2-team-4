@@ -35,17 +35,21 @@ namespace TenmoServer.Controllers
         {
             string username = User.FindFirst("name")?.Value;
             int accountId = accountDao.GetAccountNumber(username);
+            string userIdString = User.FindFirst("sub")?.Value;
+            int userId = int.Parse(userIdString);
+
+            transfer.AccountToId = userId;
 
             if (accountId == transfer.AccountFromId)
             {
                 return StatusCode(401);
             }
-            else if (accountId == transfer.AccountToId)
+            else //if (accountId == transfer.AccountToId)
             {
                 Transfer added = transferDao.CreateRequest(transfer);
                 return Created($"/transfer/{added.TransferId}", added);
             }
-            return StatusCode(400);
+            //return StatusCode(400);
         }
 
         [HttpPost("send")] //creates a transfer send, checks balance, and executes or denies all in one method
@@ -57,7 +61,6 @@ namespace TenmoServer.Controllers
 
             transfer.AccountFromId = userId;
             Transfer sendMoney = transferDao.CreateSend(transfer);
-
 
             decimal balanceFromAccount = accountDao.GetBalance(username, userId).Item1;
 
@@ -74,7 +77,7 @@ namespace TenmoServer.Controllers
         }
 
         [HttpPut("{transferId}")] //checks to see the right user is approving the request and there is a great enough balance
-        public ActionResult<Transfer> UpdateRequestedTransfer(int transferId)
+        public ActionResult UpdateRequestedTransfer(int transferId)
         {
             string username = User.FindFirst("name")?.Value;
             int accountId = accountDao.GetAccountNumber(username);
@@ -83,21 +86,36 @@ namespace TenmoServer.Controllers
             
             Transfer transferToUpdate = transferDao.GetTransfer(transferId);
             decimal balanceFromAccount = accountDao.GetBalance(username, userId).Item1;
-
-            if (accountId == transferToUpdate.AccountFromId)
+            if (transferToUpdate != null)
             {
-                if (balanceFromAccount >= transferToUpdate.TransferAmount)
+                if (accountId == transferToUpdate.AccountFromId)
                 {
-                    transferDao.ExecuteTransfer(transferToUpdate);
-                    return Ok();
+                    if (balanceFromAccount >= transferToUpdate.TransferAmount)
+                    {
+                        transferDao.ExecuteTransfer(transferToUpdate);
+                        return Ok();
+                    }
+                    transferDao.DenyTransfer(transferToUpdate);
+                    return BadRequest(new { message = "Balance too low to complete transfer. Transfer denied." });
                 }
-                return StatusCode(400);
+                else
+                {
+                    transferDao.DenyTransfer(transferToUpdate);
+                    return StatusCode(401);
+                }
             }
             else
             {
-                transferDao.DenyTransfer(transferToUpdate);
-                return StatusCode(401);
+                return BadRequest(new { message = "Incorrect transfer ID." });
             }
+        }
+
+        [HttpPut("deny/{transferId}")]
+        public ActionResult UserDeniedTransfer(int transferId)
+        {
+            Transfer transferToUpdate = transferDao.GetTransfer(transferId);
+            transferDao.DenyTransfer(transferToUpdate);
+            return Ok();
         }
 
         [HttpGet("completed")]
@@ -106,6 +124,14 @@ namespace TenmoServer.Controllers
             string username = User.FindFirst("name")?.Value;
             int accountId = accountDao.GetAccountNumber(username);
             return transferDao.ListCompletedTransfers(accountId);
+        }
+
+        [HttpGet("pending")]
+        public Dictionary<string, Transfer> ViewPendingTransfers()
+        {
+            string username = User.FindFirst("name")?.Value;
+            int accountId = accountDao.GetAccountNumber(username);
+            return transferDao.ListPendingTransfers(accountId);
         }
 
         [HttpGet("{transferId}")]

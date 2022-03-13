@@ -22,7 +22,6 @@ namespace TenmoServer.DAO
             Transfer transfer = null;
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(@"SELECT username, transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount
                                                 FROM transfer
@@ -100,7 +99,6 @@ namespace TenmoServer.DAO
                                                 UPDATE transfer
                                                 SET transfer_status_id = 2
                                                 WHERE transfer_id = @transfer_id", conn);
-
                 cmd.Parameters.AddWithValue("@account_from", transfer.AccountFromId);
                 cmd.Parameters.AddWithValue("@account_to", transfer.AccountToId);
                 cmd.Parameters.AddWithValue("@amount", transfer.TransferAmount);
@@ -119,7 +117,6 @@ namespace TenmoServer.DAO
                 SqlCommand cmd = new SqlCommand(@"UPDATE transfer
                                                 SET transfer_status_id = 3
                                                 WHERE transfer_id = @transfer_id", conn);
-
                 cmd.Parameters.AddWithValue("@transfer_id", transfer.TransferId);
 
                 cmd.ExecuteNonQuery();
@@ -188,6 +185,31 @@ namespace TenmoServer.DAO
             return userTransfers;
         }
 
+        public Dictionary<string, Transfer> ListPendingTransfers(int accountId)
+        {
+            Dictionary<string, Transfer> pendingTransfers = new Dictionary<string, Transfer>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(@"SELECT username, transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount
+                                                FROM transfer
+                                                JOIN account ON account.account_id = transfer.account_to
+                                                JOIN tenmo_user ON tenmo_user.user_id = account.user_id
+                                                WHERE transfer_status_id = 1 AND account_from = @account_id;", conn);
+                cmd.Parameters.AddWithValue("@account_id", accountId);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string idAsString = Convert.ToString(reader["transfer_id"]);
+                    Transfer transfer = createTransferFromReader(reader);
+                    transfer.UserTo = Convert.ToString(reader["username"]);
+                    pendingTransfers[idAsString] = transfer;
+                }
+            }
+            return pendingTransfers;
+        }
+
         private Transfer createTransferFromReader(SqlDataReader reader)
         {
             Transfer transfer = new Transfer();
@@ -200,6 +222,5 @@ namespace TenmoServer.DAO
 
             return transfer;
         }
-
     }
 }

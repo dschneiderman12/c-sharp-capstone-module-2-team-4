@@ -59,7 +59,6 @@ namespace TenmoClient.Services
             Console.WriteLine("");
             Console.WriteLine($"Hello, {username}!");
             Console.WriteLine($"Your current account balance is: {balance.ToString("C")}");
-
             Console.WriteLine("---------");
         }
 
@@ -81,43 +80,7 @@ namespace TenmoClient.Services
                     Console.WriteLine($"{transfer.Key}              From: {transfer.Value.UserFrom}            {transfer.Value.TransferAmount.ToString("C")}");
                 }
             }
-
             Console.WriteLine("---------------------------------------------------");
-        }
-
-
-
-        public void PrintTransfer(Dictionary<string, Transfer> transferList)
-        {
-            string idSelected = Console.ReadLine();
-            Transfer info = transferList[idSelected];
-
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine("Transfer Details");
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine($"Id: {info.TransferId}");
-            Console.WriteLine($"From: {info.UserFrom}");
-            Console.WriteLine($"To: {info.UserTo}");
-            Console.WriteLine("Status: Approved");
-            Console.WriteLine($"Amount: {info.TransferAmount.ToString("C")}");
-        }
-
-        public void PrintUsers(List<User> users)
-        {
-            Console.WriteLine("Please choose an option: 4");
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine("------------------Users----------------------");
-            Console.WriteLine("|      Id   |   Username              ");
-            Console.WriteLine("--------------------------------------------");
-            foreach (User user in users)
-            {
-                Console.WriteLine($"      {user.UserId}  |  {user.Username}");
-            }
-        }
-
-        public void PrintSendingOptions()
-        {
-            Console.WriteLine("Id of the user you are requesting from[0]: ");
         }
 
         public void PrintTransfer(Dictionary<string, Transfer> transferList, string idSelected)
@@ -134,6 +97,36 @@ namespace TenmoClient.Services
             Console.WriteLine($"Amount: {info.TransferAmount.ToString("C")}");
         }
 
+        public void PrintUsers(List<User> users)
+        {
+            //Console.WriteLine("Please choose an option: 4");
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("------------------Users---------------------");
+            Console.WriteLine("|      Id   |   Username              ");
+            Console.WriteLine("--------------------------------------------");
+            foreach (User user in users)
+            {
+                Console.WriteLine($"      {user.UserId}  |  {user.Username}");
+            }
+        }
 
+        public void PrintPending(Dictionary<string, Transfer> pendingTransfers)
+        {
+            Console.Clear();
+            Console.WriteLine("");
+            Console.WriteLine("---------------------------------------------------");
+            Console.WriteLine($"Transfer ID             To             Amount");
+
+            foreach (KeyValuePair<string, Transfer> transfer in pendingTransfers)
+            {
+                Console.WriteLine($"{transfer.Key}                {transfer.Value.UserTo}              {transfer.Value.TransferAmount.ToString("C")}");
+            }
+            Console.WriteLine("---------------------------------------------------");
+        }
+
+        //public void PrintSendingOptions()
+        //{
+        //    Console.WriteLine("Id of the user you are requesting from[0]: ");
+        //}
     }
 }
