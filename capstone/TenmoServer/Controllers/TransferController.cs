@@ -128,12 +128,21 @@ namespace TenmoServer.Controllers
             return transferDao.ListCompletedTransfers(accountId);
         }
 
-        [HttpGet("pending")]
-        public Dictionary<string, Transfer> ViewPendingTransfers()
+        [HttpGet("request/pending")]
+        public Dictionary<string, Transfer> ViewPendingTransfersRequests()
         {
             string username = User.FindFirst("name")?.Value;
             int accountId = accountDao.GetAccountNumber(username);
-            return transferDao.ListPendingTransfers(accountId);
+            return transferDao.ListPendingTransfersFromAccount(accountId);
+        }
+
+
+        [HttpGet("sent/pending")]
+        public Dictionary<string, Transfer> ViewPendingTransfersSent()
+        {
+            string username = User.FindFirst("name")?.Value;
+            int accountId = accountDao.GetAccountNumber(username);
+            return transferDao.ListPendingTransfersToAccount(accountId);
         }
 
         [HttpGet("{transferId}")]
